@@ -1,0 +1,43 @@
+# Adapted from cmcrameri (https://github.com/callumrollo/cmcrameri)
+exclude: cmglaciology/cmaps|qgis
+
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v6.0.0
+  hooks:
+    - id: trailing-whitespace
+    - id: check-ast
+    - id: debug-statements
+    - id: end-of-file-fixer
+    - id: check-docstring-first
+    - id: check-added-large-files
+    - id: check-toml
+    - id: check-yaml
+
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.16.1
+  hooks:
+    - id: ruff
+
+- repo: https://github.com/psf/black-pre-commit-mirror
+  rev: 26.5.1
+  hooks:
+  - id: black
+    language_version: python3
+
+- repo: https://github.com/codespell-project/codespell
+  rev: v2.4.3
+  hooks:
+    - id: codespell
+
+- repo: https://github.com/tox-dev/pyproject-fmt
+  rev: "v2.26.0"
+  hooks:
+    - id: pyproject-fmt
+      additional_dependencies: ["tox>=4.9"]
+
+- repo: https://github.com/aio-libs/sort-all
+  rev: "v1.3.0"
+  hooks:
+    - id: sort-all
+      types: [file, python]
