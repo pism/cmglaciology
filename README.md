@@ -4,11 +4,13 @@ Colormaps for glaciology, packaged for Matplotlib.
 
 ![colormaps](cmglaciology/colormaps.png)
 
-| Name       | Type        | Intended use                         |
-| ---------- | ----------- | ------------------------------------ |
-| `speed`    | Sequential  | Ice surface speed                    |
-| `dem_ak`   | Topographic | Surface/bed elevation, Alaska        |
-| `dem_gris` | Topographic | Surface/bed elevation, Greenland     |
+| Name           | Type        | Intended use                                |
+| -------------- | ----------- | ------------------------------------------- |
+| `speed`        | Sequential  | Ice surface speed                           |
+| `akbathtopo`   | Topographic | Bathymetry and surface elevation, Alaska    |
+| `aktopo`       | Topographic | Surface elevation (land only), Alaska       |
+| `grisbathtopo` | Topographic | Bathymetry and surface elevation, Greenland |
+| `gristopo`     | Topographic | Surface elevation (land only), Greenland    |
 
 ## Install
 
@@ -75,11 +77,13 @@ are not evenly spaced. The stops are (data value → position in the colormap
 is linear between the first and last value):
 
 - `speed`: 10, 30, 100, 250, 750 (m/yr)
-- `dem_ak`: -2000, 0, 1, 1250, 2000, 2500, 3000, 3500 (m)
-- `dem_gris`: -500, 0, 1, 1500, 2000 (m)
+- `akbathtopo`: -2000, 0, 1, 1250, 2000, 2500, 3000, 3500 (m)
+- `aktopo`: 0, 1, 1250, 2000, 2500, 3000, 3500 (m)
+- `grisbathtopo`: -500, 0, 1, 1500, 2000 (m)
+- `gristopo`: 0, 1, 1500, 2000 (m)
 
 To reproduce the QGIS rendering, use `vmin`/`vmax` equal to the first and last
-stop. The `dem_*` maps have a sharp break at sea level (0–1 m).
+stop. The topographic maps have a sharp break at sea level (0–1 m).
 
 ## Adding a colormap
 
@@ -90,6 +94,24 @@ stop. The `dem_*` maps have a sharp break at sea level (0–1 m).
 3. Add the name to one of the groups at the top of `cmglaciology/cm.py`.
 4. Run `python cm.py` from the `cmglaciology/` directory to
    refresh `colormaps.png`, and `pytest` to check everything.
+
+## Releasing
+
+Development happens on `main`; releases are cut from the `release` branch by
+the [ASFHyP3 actions](https://github.com/ASFHyP3/actions) workflows in
+`.github/workflows/`, as in [pism-terra](https://github.com/pism/pism-terra):
+
+1. Every pull request to `main` adds an entry to [CHANGELOG.md](CHANGELOG.md)
+   under a heading with the next version number, e.g. `## [0.2.0]` (or carries
+   the `bumpless` label if it changes nothing a user would notice).
+2. To release, open a pull request from `main` to `release` and give it one of
+   the labels `major`, `minor`, `patch` or `bumpless`.
+3. Merging it tags the new version (`v0.2.0`), which creates a GitHub release
+   with the matching changelog section as its notes and brings `release` back
+   into `main`.
+
+The version number of an installed package comes from the git tags, through
+`setuptools_scm`.
 
 ## Acknowledgements
 

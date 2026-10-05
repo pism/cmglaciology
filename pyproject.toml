@@ -1,6 +1,6 @@
 [build-system]
 build-backend = "setuptools.build_meta"
-requires = [ "setuptools>=61" ]
+requires = [ "setuptools>=61", "setuptools-scm[toml]>=6.2" ]
 
 [project]
 name = "cmglaciology"
@@ -32,7 +32,8 @@ optional-dependencies.test = [ "pytest" ]
 [tool.setuptools]
 packages = [ "cmglaciology" ]
 package-data.cmglaciology = [ "cmaps/*.txt", "colormaps.png" ]
-dynamic.version = { attr = "cmglaciology.__version__" }
+
+[tool.setuptools_scm]
 
 [tool.ruff]
 line-length = 120

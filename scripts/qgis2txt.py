@@ -7,13 +7,13 @@ interpolated between its color stops and sampled at 256 evenly spaced levels,
 giving a ``256 x 3`` table of RGB values in ``[0, 1]`` -- the same layout used
 by cmcrameri (https://github.com/callumrollo/cmcrameri).
 
-Usage
------
+Examples
+--------
     python scripts/qgis2txt.py                 # convert everything in qgis/
     python scripts/qgis2txt.py path/to/my.txt  # convert selected files
 """
 
-import sys
+import argparse
 from pathlib import Path
 
 import numpy as np
@@ -44,13 +44,40 @@ def qgis2rgb(filename, num_levels=N_LEVELS):
     return cmap(np.linspace(0, 1, num_levels))[:, :3]
 
 
-def main(filenames):
-    paths = [Path(f) for f in filenames] or sorted(qgis_dir.glob("*.txt"))
+def parse_args(argv=None):
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        "files",
+        nargs="*",
+        type=Path,
+        metavar="FILE",
+        help=f"QGIS colormap export file(s) to convert (default: all *.txt in {qgis_dir}).",
+    )
+    parser.add_argument(
+        "-o",
+        "--outdir",
+        type=Path,
+        default=cmap_data_dir,
+        metavar="DIR",
+        help="Directory the RGB tables are written to, as <name>.txt (default: %(default)s).",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv=None):
+    args = parse_args(argv)
+    paths = args.files or sorted(qgis_dir.glob("*.txt"))
+    missing = [str(path) for path in paths if not path.is_file()]
+    if missing:
+        raise SystemExit(f"File(s) not found: {', '.join(missing)}")
+    args.outdir.mkdir(parents=True, exist_ok=True)
     for path in paths:
-        out = cmap_data_dir / f"{path.stem}.txt"
+        out = args.outdir / f"{path.stem}.txt"
         np.savetxt(out, qgis2rgb(path), fmt="%.6f")
         print(f"{path} -> {out}")
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    main()
