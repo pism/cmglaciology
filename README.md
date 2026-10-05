@@ -2,7 +2,7 @@
 
 Colormaps for glaciology, packaged for Matplotlib.
 
-![colormaps](cmglaciology/colormaps.png)
+![colormaps](https://raw.githubusercontent.com/pism/cmglaciology/main/cmglaciology/colormaps.png)
 
 | Name           | Type        | Intended use                                |
 | -------------- | ----------- | ------------------------------------------- |
@@ -107,8 +107,8 @@ the [ASFHyP3 actions](https://github.com/ASFHyP3/actions) workflows in
 2. To release, open a pull request from `main` to `release` and give it one of
    the labels `major`, `minor`, `patch` or `bumpless`.
 3. Merging it tags the new version (`v0.2.0`), which creates a GitHub release
-   with the matching changelog section as its notes and brings `release` back
-   into `main`.
+   with the matching changelog section as its notes, brings `release` back
+   into `main`, and publishes the package to [PyPI](https://pypi.org/project/cmglaciology/).
 
 The version number of an installed package comes from the git tags, through
 `setuptools_scm`.
