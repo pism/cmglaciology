@@ -15,7 +15,8 @@ _cmap_names_sequential = ("speed",)
 _cmap_names_topographic = (
     "akbathtopo",
     "aktopo",
-    "dem_gris",
+    "grisbathtopo",
+    "gristopo",
 )
 
 
