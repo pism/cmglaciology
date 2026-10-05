@@ -15,6 +15,12 @@ Colormaps for glaciology, packaged for Matplotlib.
 ## Install
 
 ```sh
+python -m pip install cmglaciology
+```
+
+For the development version:
+
+```sh
 python -m pip install git+https://github.com/pism/cmglaciology.git
 ```
 
