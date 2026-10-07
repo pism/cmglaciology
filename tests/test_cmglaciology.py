@@ -8,7 +8,9 @@ import sys
 from pathlib import Path
 
 import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
+import pytest
 from matplotlib.colors import Colormap
 
 library_dir = Path(__file__).parent.parent.absolute()
@@ -54,3 +56,62 @@ def test_matches_qgis_source():
     for path in qgis_paths:
         cmap = getattr(cm, path.stem)
         np.testing.assert_allclose(cmap.colors, qgis2rgb(path), atol=1e-6)
+
+
+def test_show_cmaps():
+    fig = cm.show_cmaps()
+    # One row per colormap, without its reversed version
+    assert len(fig.axes) == len(cm.paths)
+    plt.close(fig)
+
+
+def test_show_cmaps_cvd():
+    pytest.importorskip("colorspacious")
+    fig = cm.show_cmaps(cvd=True)
+    # Normal vision, protanopia, deuteranopia and tritanopia for every colormap
+    assert len(fig.axes) == 4 * len(cm.paths)
+    titles = [ax.get_title() for ax in fig.axes[:4]]
+    assert titles == ["Normal vision", "Protanopia", "Deuteranopia", "Tritanopia"]
+    assert all(ax.get_title() == "" for ax in fig.axes[4:])
+    plt.close(fig)
+
+
+@pytest.mark.parametrize("cvd_type", ["protanomaly", "deuteranomaly", "tritanomaly"])
+def test_simulate_cvd(cvd_type):
+    pytest.importorskip("colorspacious")
+    simulated = cm.simulate_cvd(cm.speed, cvd_type)
+    colors = np.array(simulated.colors)
+    assert simulated.name == f"speed_{cvd_type}"
+    assert colors.shape == (256, 3)
+    assert colors.min() >= 0 and colors.max() <= 1
+    # The deficiency changes the colors
+    assert not np.allclose(colors, np.array(cm.speed.colors))
+    # A colormap can also be given by its registered name
+    by_name = cm.simulate_cvd("cmg.speed", cvd_type)
+    np.testing.assert_allclose(by_name.colors, colors)
+
+
+def test_simulate_cvd_severity_zero_is_normal_vision():
+    pytest.importorskip("colorspacious")
+    simulated = cm.simulate_cvd(cm.speed, "deuteranomaly", severity=0)
+    np.testing.assert_allclose(simulated.colors, cm.speed.colors, atol=1e-6)
+
+
+def test_simulate_cvd_keeps_grays():
+    # A gray has no hue to lose, so it looks the same with every deficiency
+    pytest.importorskip("colorspacious")
+    from matplotlib.colors import ListedColormap
+
+    grays = ListedColormap(
+        np.repeat(np.linspace(0, 1, 16)[:, np.newaxis], 3, axis=1), name="grays"
+    )
+    for cvd_type in ["protanomaly", "deuteranomaly", "tritanomaly"]:
+        np.testing.assert_allclose(
+            cm.simulate_cvd(grays, cvd_type).colors, grays.colors, atol=1e-3
+        )
+
+
+def test_simulate_cvd_rejects_unknown_type():
+    pytest.importorskip("colorspacious")
+    with pytest.raises(ValueError, match="cvd_type must be one of"):
+        cm.simulate_cvd(cm.speed, "protanopia")
