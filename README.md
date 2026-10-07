@@ -76,6 +76,30 @@ from cmglaciology import show_cmaps
 show_cmaps()
 ```
 
+To also see how the colormaps look with a color vision deficiency, pass
+`cvd=True`. This needs the
+[colorspacious](https://colorspacious.readthedocs.io/) package, which the
+`cvd` extra installs:
+
+```sh
+python -m pip install "cmglaciology[cvd]"
+```
+
+```python
+show_cmaps(cvd=True)
+```
+
+`simulate_cvd` returns a single colormap as it is seen with a deficiency, to
+use in a plot of your own:
+
+```python
+from cmglaciology import simulate_cvd
+
+plt.imshow(x, aspect='auto', cmap=simulate_cvd(cmg.speed, "deuteranomaly"))
+```
+
+See [the figure at the bottom](#color-vision-deficiency).
+
 ## Notes on the colormaps
 
 The colormaps were designed in QGIS against data values, so their color stops
@@ -99,7 +123,8 @@ stop. The topographic maps have a sharp break at sea level (0–1 m).
    `cmglaciology/cmaps/`.
 3. Add the name to one of the groups at the top of `cmglaciology/cm.py`.
 4. Run `python cm.py` from the `cmglaciology/` directory to
-   refresh `colormaps.png`, and `pytest` to check everything.
+   refresh `colormaps.png`, `python scripts/show_cvd.py` to refresh
+   `colormaps_cvd.png`, and `pytest` to check everything.
 
 ## Releasing
 
@@ -139,3 +164,17 @@ here. If you need perceptually uniform colormaps, use
 ## License
 
 MIT, see [LICENSE.txt](LICENSE.txt).
+
+## Color vision deficiency
+
+The colormaps as they are seen with normal vision and with protanopia,
+deuteranopia and tritanopia, in which the red, green or blue cones do not
+work:
+
+![colormaps with color vision deficiencies](https://raw.githubusercontent.com/pism/cmglaciology/main/cmglaciology/colormaps_cvd.png)
+
+The figure is made with `show_cmaps(cvd=True)`, by `python scripts/show_cvd.py`.
+The simulation follows Machado et al. (2009), as implemented in
+[colorspacious](https://colorspacious.readthedocs.io/). With protanopia and
+deuteranopia, the orange-to-magenta upper part of `speed` turns into a single
+olive ramp, so high speeds are harder to tell apart.

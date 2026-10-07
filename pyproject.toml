@@ -28,7 +28,8 @@ dependencies = [
   "matplotlib>=3.6",
   "numpy",
 ]
-optional-dependencies.test = [ "pytest" ]
+optional-dependencies.cvd = [ "colorspacious" ]
+optional-dependencies.test = [ "colorspacious", "pytest" ]
 
 [tool.setuptools]
 packages = [ "cmglaciology" ]
