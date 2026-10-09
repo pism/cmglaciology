@@ -12,6 +12,8 @@ Colormaps for glaciology, packaged for Matplotlib.
 | `grisbathtopo` | Topographic | Bathymetry and surface elevation, Greenland |
 | `gristopo`     | Topographic | Surface elevation (land only), Greenland    |
 
+Contributions are welcome. Do you have a favorite colormap for ice thickness? Please let us know.
+
 ## Install
 
 ```sh
@@ -178,3 +180,7 @@ The simulation follows Machado et al. (2009), as implemented in
 [colorspacious](https://colorspacious.readthedocs.io/). With protanopia and
 deuteranopia, the orange-to-magenta upper part of `speed` turns into a single
 olive ramp, so high speeds are harder to tell apart.
+
+Example of Kennicott Glacier, Alaska, using `aktopo` and `speed` colormaps, rendered with ![pyvista](https://docs.pyvista.org/):
+
+![Kennicott Glacier, Alaska](https://raw.githubusercontent.com/pism/cmglaciology/main/cmglaciology/example.png)
