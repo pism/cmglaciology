@@ -181,6 +181,6 @@ The simulation follows Machado et al. (2009), as implemented in
 deuteranopia, the orange-to-magenta upper part of `speed` turns into a single
 olive ramp, so high speeds are harder to tell apart.
 
-Example of Kennicott Glacier, Alaska, using `aktopo` and `speed` colormaps, rendered with ![pyvista](https://docs.pyvista.org/):
+Example of Kennicott Glacier, Alaska, using `aktopo` and `speed` colormaps, rendered with [pyvista](https://docs.pyvista.org/):
 
 ![Kennicott Glacier, Alaska](https://raw.githubusercontent.com/pism/cmglaciology/main/cmglaciology/example.jpg)
