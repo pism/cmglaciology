@@ -183,4 +183,4 @@ olive ramp, so high speeds are harder to tell apart.
 
 Example of Kennicott Glacier, Alaska, using `aktopo` and `speed` colormaps, rendered with ![pyvista](https://docs.pyvista.org/):
 
-![Kennicott Glacier, Alaska](https://raw.githubusercontent.com/pism/cmglaciology/main/cmglaciology/example.png)
+![Kennicott Glacier, Alaska](https://raw.githubusercontent.com/pism/cmglaciology/main/cmglaciology/example.jpg)
