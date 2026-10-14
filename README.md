@@ -1,5 +1,13 @@
 # cmglaciology
 
+[![PyPI](https://img.shields.io/pypi/v/cmglaciology)](https://pypi.org/project/cmglaciology/)
+[![Python versions](https://img.shields.io/pypi/pyversions/cmglaciology)](https://pypi.org/project/cmglaciology/)
+[![License: MIT](https://img.shields.io/pypi/l/cmglaciology)](https://github.com/pism/cmglaciology/blob/main/LICENSE.txt)
+[![Test](https://github.com/pism/cmglaciology/actions/workflows/test.yml/badge.svg)](https://github.com/pism/cmglaciology/actions/workflows/test.yml)
+[![Static analysis](https://github.com/pism/cmglaciology/actions/workflows/static-analysis.yml/badge.svg)](https://github.com/pism/cmglaciology/actions/workflows/static-analysis.yml)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 Colormaps for glaciology, packaged for Matplotlib.
 
 ![colormaps](https://raw.githubusercontent.com/pism/cmglaciology/main/cmglaciology/colormaps.png)
