@@ -6,14 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [PEP 440](https://www.python.org/dev/peps/pep-0440/)
 and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.2.1]
-
-### Added
-- Example visualiation of Kennicott Glacier, Alaska.
-
 ## [0.2.0]
 
 ### Added
+- Example visualization of Kennicott Glacier, Alaska.
 - `show_cmaps(cvd=True)` also draws every colormap as it is seen with protanopia, deuteranopia and tritanopia. `show_cmaps()` is unchanged.
 - `cmglaciology.simulate_cvd(cmap, cvd_type, severity=100)` returns a colormap as it is seen with a color vision deficiency.
 - The `cvd` extra installs colorspacious, which does the simulation: `python -m pip install "cmglaciology[cvd]"`.
