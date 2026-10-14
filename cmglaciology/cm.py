@@ -72,9 +72,60 @@ paths, cmaps = _load_cmaps()
 locals().update(cmaps)
 
 
-def show_cmaps(*, figwidth=8):
+# Color vision deficiencies shown by `show_cmaps(cvd=True)`: label -> colorspacious name
+_cvd_types = {
+    "Protanopia": "protanomaly",
+    "Deuteranopia": "deuteranomaly",
+    "Tritanopia": "tritanomaly",
+}
+
+
+def simulate_cvd(cmap, cvd_type, severity=100):
+    """
+    Return a colormap as it is seen with a color vision deficiency.
+
+    The simulation follows Machado et al. (2009), as implemented in the
+    colorspacious package, which must be installed
+    (``pip install cmglaciology[cvd]``).
+
+    Parameters
+    ----------
+    cmap : str or Colormap
+        The colormap, or the name of one, such as ``"cmg.speed"``.
+    cvd_type : str
+        ``"protanomaly"`` (red), ``"deuteranomaly"`` (green) or
+        ``"tritanomaly"`` (blue).
+    severity : float
+        From 0 (normal vision) to 100 (the color is not seen at all:
+        protanopia, deuteranopia or tritanopia). Default is 100.
+    """
+    try:
+        from colorspacious import cspace_convert
+    except ImportError as exc:
+        raise ImportError(
+            "Simulating color vision deficiencies needs the colorspacious package. "
+            "Install it with: python -m pip install cmglaciology[cvd]"
+        ) from exc
+    from matplotlib.colors import ListedColormap
+
+    if cvd_type not in _cvd_types.values():
+        raise ValueError(
+            f"cvd_type must be one of {sorted(_cvd_types.values())}, not {cvd_type!r}"
+        )
+
+    cmap = matplotlib.colormaps[cmap] if isinstance(cmap, str) else cmap
+    rgb = cmap(np.linspace(0, 1, cmap.N))[:, :3]
+    cvd_space = {"name": "sRGB1+CVD", "cvd_type": cvd_type, "severity": severity}
+    simulated = np.clip(cspace_convert(rgb, cvd_space, "sRGB1"), 0, 1)
+    return ListedColormap(simulated, name=f"{cmap.name}_{cvd_type}")
+
+
+def show_cmaps(*, figwidth=8, cvd=False):
     """
     Plot all available colormaps, grouped by type.
+
+    With ``cvd=True``, each colormap is also shown as it is seen with
+    protanopia, deuteranopia and tritanopia, see `simulate_cvd`.
     """
     x = np.linspace(0, 1, 256)[np.newaxis, :]
 
@@ -84,29 +135,49 @@ def show_cmaps(*, figwidth=8):
     )
     names = [(group_name, name) for group_name, group in groups for name in group]
 
+    # One column per kind of vision; normal vision only unless cvd is set
+    columns = {"Normal vision": None}
+    if cvd:
+        columns |= _cvd_types
+
     hrow = 0.7  # size of cmap row, including its label
+    htitle = 0.3 if cvd else 0.0  # room for the column titles
+    height = hrow * len(names) + htitle
     fig, axs = plt.subplots(
         len(names),
-        1,
-        figsize=(figwidth, hrow * len(names)),
-        gridspec_kw=dict(left=0.01, right=0.99, top=0.99, bottom=0.15, hspace=1.0),
+        len(columns),
+        figsize=(figwidth, height),
+        gridspec_kw=dict(
+            left=0.01,
+            right=0.99,
+            top=0.99 - htitle / height,
+            bottom=0.15 * hrow * len(names) / height,
+            hspace=1.0,
+            wspace=0.04,
+        ),
         squeeze=False,
     )
     fig.set_layout_engine("none")
 
-    for ax, (group_name, cmap_name) in zip(axs.flat, names):
-        ax.set_axis_off()
-        ax.imshow(x, cmap=cmaps[cmap_name], aspect="auto")
-        ax.text(
+    for k, (row, (group_name, cmap_name)) in enumerate(zip(axs, names)):
+        for ax, (title, cvd_type) in zip(row, columns.items()):
+            cmap = cmaps[cmap_name]
+            if cvd_type is not None:
+                cmap = simulate_cvd(cmap, cvd_type)
+            ax.set_axis_off()
+            ax.imshow(x, cmap=cmap, aspect="auto")
+            if cvd and k == 0:
+                ax.set_title(title, size=12, color="0.2")
+        row[0].text(
             0.0,
             -0.1,
             cmap_name,
             size=12,
             color="0.2",
             va="top",
-            transform=ax.transAxes,
+            transform=row[0].transAxes,
         )
-        ax.text(
+        row[-1].text(
             1.0,
             -0.1,
             group_name,
@@ -115,7 +186,7 @@ def show_cmaps(*, figwidth=8):
             style="italic",
             va="top",
             ha="right",
-            transform=ax.transAxes,
+            transform=row[-1].transAxes,
         )
 
     return fig

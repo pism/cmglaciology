@@ -10,11 +10,12 @@ See README.md for an overview and instructions.
 from importlib.metadata import PackageNotFoundError, version
 
 from . import cm
-from .cm import show_cmaps
+from .cm import show_cmaps, simulate_cvd
 
 __all__ = (
     "cm",
     "show_cmaps",
+    "simulate_cvd",
 )
 
 
